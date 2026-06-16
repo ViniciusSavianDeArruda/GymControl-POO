@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
- * Classe responsável por centralizar as regras de negócio do sistema.
- * Gerencia os cadastros de alunos e professores, os planos disponíveis,
- * os pagamentos realizados e as operações de busca, remoção e listagem.
+ * classe responsável por gerenciar os dados e as regras de negócio da academia.
+ * ela controla alunos, professores, planos e pagamentos.
  *
- * Dessa forma, a classe Main fica responsável apenas pela interação
- * com o usuário, enquanto a Academia concentra a lógica do sistema.
+ * a classe Main apenas recebe as entradas do usuário,
+ * enquanto esta classe executa as operações do sistema.
  */
 public class Academia {
 
-    // Coleções que armazenam os dados do sistema em memória
+    // listas que armazenam os dados cadastrados em memória
     private List<Aluno> alunos = new ArrayList<>();
     private List<Professor> professores = new ArrayList<>();
     private List<Plano> planos = new ArrayList<>();
     private List<Pagamento> pagamentos = new ArrayList<>();
 
-    // ALUNOS
+    // métodos relacionados aos alunos
+
     public void adicionarAluno(Aluno a) {
 
-        // Regra de negócio: não permitir CPFs duplicados
+        // impede o cadastro de cpfs repetidos
         if (cpfJaExiste(a.getCpf()))
             throw new IllegalArgumentException("Ja existe uma pessoa com este CPF");
 
@@ -30,6 +30,8 @@ public class Academia {
     }
 
     public boolean removerAluno(String cpf) {
+
+        // procura o aluno pelo cpf informado
         Aluno a = buscarAlunoCpf(cpf);
 
         if (a != null) {
@@ -42,7 +44,7 @@ public class Academia {
 
     public Aluno buscarAlunoCpf(String cpf) {
 
-        // Busca sequencial pelo CPF informado
+        // percorre a lista procurando um cpf igual
         for (Aluno a : alunos) {
             if (a.getCpf().equals(cpf))
                 return a;
@@ -51,10 +53,11 @@ public class Academia {
         return null;
     }
 
-    // PROFESSORES
+    // métodos relacionados aos professores
+
     public void adicionarProfessor(Professor p) {
 
-        // Regra de negócio: CPF deve ser único no sistema
+        // garante que o cpf seja único no sistema
         if (cpfJaExiste(p.getCpf()))
             throw new IllegalArgumentException("Ja existe uma pessoa com este CPF");
 
@@ -62,6 +65,8 @@ public class Academia {
     }
 
     public boolean removerProfessor(String cpf) {
+
+        // procura o professor pelo cpf
         Professor p = buscarProfessorCpf(cpf);
 
         if (p != null) {
@@ -74,7 +79,7 @@ public class Academia {
 
     public Professor buscarProfessorCpf(String cpf) {
 
-        // Busca professor pelo CPF
+        // percorre a lista de professores procurando o cpf
         for (Professor p : professores) {
             if (p.getCpf().equals(cpf))
                 return p;
@@ -83,7 +88,7 @@ public class Academia {
         return null;
     }
 
-    // PLANOS
+    // métodos relacionados aos planos
 
     public void adicionarPlano(Plano p) {
         planos.add(p);
@@ -91,20 +96,20 @@ public class Academia {
 
     public Plano getPlano(int index) {
 
-        // Evita acesso a posições inexistentes da lista
+        // evita acessar posições inválidas da lista
         if (index < 0 || index >= planos.size())
             return null;
 
         return planos.get(index);
     }
 
-    // PAGAMENTOS
+    // métodos relacionados aos pagamentos
 
     public void adicionarPagamento(Pagamento p) {
         pagamentos.add(p);
     }
 
-    //  LISTAGEM
+    // exibe todos os alunos e professores cadastrados
 
     public void listarPessoas() {
 
@@ -114,9 +119,8 @@ public class Academia {
         }
 
         /*
-         * Polimorfismo:
-         * Aluno e Professor são tratados de forma uniforme
-         * através da superclasse Pessoa.
+         * exemplo de polimorfismo:
+         * alunos e professores são tratados como Pessoa.
          */
         List<Pessoa> pessoas = new ArrayList<>();
 
@@ -127,18 +131,16 @@ public class Academia {
 
         for (Pessoa p : pessoas) {
 
-            // Despacho dinâmico:
-            // cada objeto executa sua própria implementação
-            // de exibirDados()
+            /*
+             * cada objeto executa sua própria versão
+             * do método exibirDados().
+             */
             p.exibirDados();
         }
     }
 
-    //  VALIDAÇÕES
-    /*
-     * Verifica se já existe uma pessoa cadastrada
-     * utilizando o CPF informado.
-     */
+    // verifica se o cpf já está cadastrado
+
     private boolean cpfJaExiste(String cpf) {
 
         for (Aluno a : alunos)
@@ -152,12 +154,7 @@ public class Academia {
         return false;
     }
 
-    // GETTERS
-
-    /*
-     * Retornam cópias das listas para preservar
-     * o encapsulamento da classe.
-     */
+    // retorna cópias das listas para manter o encapsulamento
 
     public List<Aluno> getAlunos() {
         return new ArrayList<>(alunos);

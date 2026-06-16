@@ -2,12 +2,26 @@ package models;
 
 import interfaces.Exibivel;
 
-// Classe abstrata que serve de base para todos os planos da academia.
+/*
+ * representa um plano da academia.
+ *
+ * esta é uma classe abstrata que serve como base
+ * para os diferentes tipos de plano disponíveis
+ * no sistema.
+ *
+ * as classes filhas são responsáveis por definir
+ * como o valor final do plano será calculado.
+ */
 public abstract class Plano implements Exibivel {
 
     private String nomePlano;
     private double valorBase;
 
+    /*
+     * construtor utilizado pelas subclasses
+     * para definir o nome e o valor base
+     * do plano.
+     */
     public Plano(String nomePlano, double valorBase) {
         this.nomePlano = nomePlano;
         this.valorBase = valorBase;
@@ -21,10 +35,22 @@ public abstract class Plano implements Exibivel {
         return valorBase;
     }
 
-    // Cada tipo de plano calcula seu valor de forma diferente.
+    /*
+     * método abstrato que deve ser implementado
+     * pelas classes filhas.
+     *
+     * cada tipo de plano possui sua própria
+     * regra de cálculo de valor.
+     */
     public abstract double calcularValor();
 
-    // Implementação do método definido na interface Exibivel.
+    /*
+     * implementação do método definido
+     * pela interface Exibivel.
+     *
+     * exibe o nome do plano e o valor
+     * calculado pela respectiva subclasse.
+     */
     @Override
     public void exibirInformacoes() {
         System.out.println(nomePlano + " - R$ " + calcularValor());

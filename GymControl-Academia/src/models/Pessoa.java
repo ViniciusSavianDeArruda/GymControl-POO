@@ -2,25 +2,45 @@ package models;
 
 import exceptions.IdadeInvalidaException;
 
-// Classe abstrata que representa uma pessoa da academia.
+/*
+ * representa uma pessoa da academia.
+ *
+ * esta é uma classe abstrata que serve como base
+ * para alunos e professores.
+ *
+ * ela reúne os atributos e comportamentos
+ * que são comuns a todas as pessoas do sistema.
+ */
 public abstract class Pessoa {
 
     private String nome;
     private String cpf;
     private int idade;
 
-    // Construtor padrão.
+    // construtor padrão
     public Pessoa() {
     }
 
-    // Construtor parametrizado.
+    /*
+     * construtor parametrizado.
+     *
+     * utiliza os métodos setters para garantir
+     * que os dados sejam validados durante
+     * a criação do objeto.
+     */
     public Pessoa(String nome, String cpf, int idade) {
         setNome(nome);
         setCpf(cpf);
         setIdade(idade);
     }
 
-    // Método abstrato implementado pelas subclasses.Toda classe que herdar de Pessoa será obrigada a criar seu próprio método exibirDados()
+    /*
+     * método abstrato que deve ser implementado
+     * pelas classes filhas.
+     *
+     * cada tipo de pessoa exibe seus dados
+     * de maneira específica.
+     */
     public abstract void exibirDados();
 
     public String getNome() {
@@ -35,7 +55,12 @@ public abstract class Pessoa {
         return idade;
     }
 
-    // Validação do nome.
+    /*
+     * valida o nome informado pelo usuário.
+     *
+     * não permite nomes vazios, muito curtos
+     * ou compostos apenas por números.
+     */
     public void setNome(String nome) {
         if (nome == null || nome.trim().isEmpty())
             throw new IllegalArgumentException("Nome nao pode ser vazio");
@@ -49,7 +74,12 @@ public abstract class Pessoa {
         this.nome = nome.trim();
     }
 
-    // Validação do CPF.
+    /*
+     * valida o cpf informado.
+     *
+     * o cpf deve possuir exatamente
+     * 11 dígitos numéricos.
+     */
     public void setCpf(String cpf) {
         if (cpf == null || cpf.trim().isEmpty())
             throw new IllegalArgumentException("CPF nao pode ser vazio");
@@ -65,7 +95,16 @@ public abstract class Pessoa {
         this.cpf = cpfLimpo;
     }
 
-    // Regra de negócio protegida por exceção customizada.
+    /*
+     * valida a idade informada.
+     *
+     * caso a idade esteja fora da faixa permitida,
+     * o sistema lança a exceção personalizada
+     * IdadeInvalidaException.
+     *
+     * essa validação garante que apenas pessoas
+     * com idade entre 16 e 80 anos sejam cadastradas.
+     */
     public void setIdade(int idade) {
         if (idade < 16 || idade > 80)
             throw new IdadeInvalidaException(

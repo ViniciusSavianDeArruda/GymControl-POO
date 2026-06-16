@@ -7,6 +7,17 @@ import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+
+/*
+ * classe principal do sistema.
+ *
+ * é responsável pela interação com o usuário
+ * através do menu no terminal.
+ *
+ * toda a lógica de negócio fica na classe Academia,
+ * enquanto esta classe apenas recebe os dados,
+ * chama os métodos necessários e exibe os resultados.
+ */
 public class Main {
 
     static Scanner sc = new Scanner(System.in);
@@ -14,7 +25,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // adiciona os planos padroes ao iniciar o sistema
+        /*
+         * adiciona os planos disponíveis ao iniciar
+         * a aplicação.
+         *
+         * esses objetos ficam armazenados na classe
+         * Academia e poderão ser utilizados pelos alunos.
+         */
         academia.adicionarPlano(new PlanoMensal());
         academia.adicionarPlano(new PlanoTrimestral());
         academia.adicionarPlano(new PlanoAnual());
@@ -61,7 +78,12 @@ public class Main {
 
     // metodos auxiliares de entrada com retry automatico
 
-    // le um numero inteiro, pede de novo se vier letra
+     /*
+     * lê um número inteiro digitado pelo usuário.
+     *
+     * caso seja digitado texto ou caracteres inválidos,
+     * o sistema trata a exceção e solicita novamente.
+     */
     static int lerInteiro(String mensagem) {
         while (true) {
             System.out.print(mensagem);
@@ -94,9 +116,11 @@ public class Main {
         }
     }
 
-    // aluno
-
-    // cadastra um aluno JA com plano (usa o construtor de 4 parametros)
+    /*
+     * cadastra um aluno associado a um plano.
+     *
+     * utiliza o construtor de 4 parâmetros da classe Aluno.
+     */
     static void cadastrarAluno() {
         System.out.println("\nCadastro de aluno (com plano)");
 
@@ -115,7 +139,12 @@ public class Main {
         }
     }
 
-    // cadastra um aluno SEM plano (usa o construtor de 3 parametros - sobrecarga)
+     /*
+     * cadastra um aluno sem plano.
+     *
+     * demonstra a sobrecarga de construtores,
+     * utilizando a versão com apenas 3 parâmetros.
+     */
     static void cadastrarAlunoSemPlano() {
         System.out.println("\nCadastro de aluno (sem plano)");
 

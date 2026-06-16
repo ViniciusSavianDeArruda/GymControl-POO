@@ -2,18 +2,25 @@ package models;
 
 import interfaces.Exibivel;
 
-// Representa um aluno da academia.
+/*
+ * representa um aluno da academia.
+ *
+ * esta classe herda os atributos e comportamentos da classe Pessoa
+ * e adiciona a informação do plano contratado pelo aluno.
+ */
 public class Aluno extends Pessoa implements Exibivel {
 
-    // Plano associado ao aluno.
+    // plano associado ao aluno
     private Plano plano;
 
-    // Construtor sem plano (sobrecarga).
+    // construtor sem plano
+    // utilizado quando o aluno é cadastrado sem contratar um plano
     public Aluno(String nome, String cpf, int idade) {
         super(nome, cpf, idade);
     }
 
-    // Construtor com plano.
+    // construtor com plano
+    // utilizado quando o aluno já é cadastrado com um plano definido
     public Aluno(String nome, String cpf, int idade, Plano plano) {
         super(nome, cpf, idade);
         this.plano = plano;
@@ -23,11 +30,18 @@ public class Aluno extends Pessoa implements Exibivel {
         return plano;
     }
 
+    // permite alterar ou definir o plano do aluno
     public void setPlano(Plano plano) {
         this.plano = plano;
     }
 
-    // Sobrescrita do método abstrato da classe Pessoa.
+    /*
+     * implementação obrigatória do método abstrato da classe Pessoa.
+     *
+     * exemplo de polimorfismo por sobrescrita:
+     * cada subclasse de Pessoa possui sua própria versão
+     * do método exibirDados().
+     */
     @Override
     public void exibirDados() {
         System.out.println("\nAluno: " + getNome());
@@ -40,7 +54,12 @@ public class Aluno extends Pessoa implements Exibivel {
             System.out.println("Sem plano");
     }
 
-    // Implementação do método da interface Exibivel.
+    /*
+     * implementação do método definido pela interface Exibivel.
+     *
+     * garante que todas as classes que implementam a interface
+     * possuam uma forma padronizada de exibir informações.
+     */
     @Override
     public void exibirInformacoes() {
         System.out.println(getNome() + " (Aluno)");

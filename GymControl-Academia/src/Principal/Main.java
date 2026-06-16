@@ -4,6 +4,7 @@ import models.*;
 import exceptions.IdadeInvalidaException;
 
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
@@ -34,6 +35,7 @@ public class Main {
                 case 6: listarPagamentos(); break;
                 case 7: removerAluno(); break;
                 case 8: removerProfessor(); break;
+                case 9: cadastrarAlunoSemPlano(); break;
                 case 0: System.out.println("Saindo..."); break;
                 default: System.out.println("Opcao invalida. Escolha um numero do menu.");
             }
@@ -45,7 +47,7 @@ public class Main {
 
     static void menu() {
         System.out.println("\nGymControl");
-        System.out.println("1 - Cadastrar aluno");
+        System.out.println("1 - Cadastrar aluno (com plano)");
         System.out.println("2 - Cadastrar professor");
         System.out.println("3 - Listar pessoas");
         System.out.println("4 - Listar planos");
@@ -53,6 +55,7 @@ public class Main {
         System.out.println("6 - Listar pagamentos");
         System.out.println("7 - Remover aluno");
         System.out.println("8 - Remover professor");
+        System.out.println("9 - Cadastrar aluno (sem plano)");
         System.out.println("0 - Sair");
     }
 
@@ -67,8 +70,14 @@ public class Main {
                 sc.nextLine();
                 return valor;
             } catch (InputMismatchException e) {
+                // usuario digitou algo que nao e numero (ex: letra)
                 System.out.println("Valor invalido. Digite apenas numeros inteiros.");
                 sc.nextLine();
+            } catch (NoSuchElementException e) {
+                // a entrada foi encerrada (fim do input / EOF) - encerra com seguranca
+                System.out.println("\nEntrada encerrada. Finalizando o programa.");
+                sc.close();
+                System.exit(0);
             }
         }
     }
@@ -87,18 +96,38 @@ public class Main {
 
     // aluno
 
+    // cadastra um aluno JA com plano (usa o construtor de 4 parametros)
     static void cadastrarAluno() {
-        System.out.println("\nCadastro de aluno");
+        System.out.println("\nCadastro de aluno (com plano)");
 
         String nome = lerTexto("Nome: ");
         String cpf = lerCpfValido();
-        int idade = lerInteiro("idade:");
+        int idade = lerInteiro("Idade: ");
         Plano plano = lerPlanoValido();
 
+        // a validacao da idade acontece dentro da Pessoa (setIdade);
+        // aqui capturamos a excecao para o programa nao quebrar
         try {
             academia.adicionarAluno(new Aluno(nome, cpf, idade, plano));
             System.out.println("Aluno cadastrado com sucesso.");
-        } catch (IllegalArgumentException e) {
+        } catch (IdadeInvalidaException | IllegalArgumentException e) {
+            System.out.println("Falha no cadastro: " + e.getMessage());
+        }
+    }
+
+    // cadastra um aluno SEM plano (usa o construtor de 3 parametros - sobrecarga)
+    static void cadastrarAlunoSemPlano() {
+        System.out.println("\nCadastro de aluno (sem plano)");
+
+        String nome = lerTexto("Nome: ");
+        String cpf = lerCpfValido();
+        int idade = lerInteiro("Idade: ");
+
+        // aqui usamos o construtor sobrecarregado de 3 parametros (sem plano)
+        try {
+            academia.adicionarAluno(new Aluno(nome, cpf, idade));
+            System.out.println("Aluno cadastrado sem plano. Use o cadastro com plano para definir depois.");
+        } catch (IdadeInvalidaException | IllegalArgumentException e) {
             System.out.println("Falha no cadastro: " + e.getMessage());
         }
     }
@@ -121,13 +150,14 @@ public class Main {
 
         String nome = lerTexto("Nome: ");
         String cpf = lerCpfValido();
-        int idade = lerInteiro("Idade:");
+        int idade = lerInteiro("Idade: ");
         String especialidade = lerTexto("Especialidade: ");
 
+        // mesma logica do aluno: a Pessoa valida, o Main captura
         try {
             academia.adicionarProfessor(new Professor(nome, cpf, idade, especialidade));
             System.out.println("Professor cadastrado com sucesso.");
-        } catch (IllegalArgumentException e) {
+        } catch (IdadeInvalidaException | IllegalArgumentException e) {
             System.out.println("Falha no cadastro: " + e.getMessage());
         }
     }
@@ -193,35 +223,33 @@ public class Main {
     // pagamentos
 
     static void registrarPagamento() {
-    System.out.println("\nRegistrar pagamento");
-    String cpf = lerTexto("CPF do aluno: ");
+        System.out.println("\nRegistrar pagamento");
+        String cpf = lerTexto("CPF do aluno: ");
 
-    Aluno a = academia.buscarAlunoCpf(cpf);
+        Aluno a = academia.buscarAlunoCpf(cpf);
 
-    if (a == null) {
-        System.out.println("Aluno nao encontrado.");
-        return;
+        if (a == null) {
+            System.out.println("Aluno nao encontrado.");
+            return;
+        }
+
+        if (a.getPlano() == null) {
+            System.out.println("Este aluno nao possui plano contratado.");
+            return;
+        }
+
+        // exemplo de try-catch-finally completo
+        try {
+            academia.adicionarPagamento(
+                new Pagamento(a, a.getPlano().calcularValor(), "hoje")
+            );
+            System.out.println("Pagamento registrado com sucesso.");
+        } catch (Exception e) {
+            System.out.println("Falha ao registrar pagamento: " + e.getMessage());
+        } finally {
+            System.out.println("Operacao de pagamento finalizada.");
+        }
     }
-
-    if (a.getPlano() == null) {
-        System.out.println("Este aluno nao possui plano contratado.");
-        return;
-    }
-
-    try {
-        academia.adicionarPagamento(
-            new Pagamento(a, a.getPlano().calcularValor(), "hoje")
-        );
-
-        System.out.println("Pagamento registrado com sucesso.");
-
-    } catch (Exception e) {
-        System.out.println("Falha ao registrar pagamento: " + e.getMessage());
-
-    } finally {
-        System.out.println("Operacao de pagamento finalizada.");
-    }
-}
 
     static void listarPagamentos() {
         if (academia.getPagamentos().isEmpty()) {
